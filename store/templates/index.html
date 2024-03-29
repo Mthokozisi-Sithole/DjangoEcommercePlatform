@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+{% load cart %}
+{% load custom_filter %}
+<!-- body -->
+<div class="container-fluid mt-3">
+    <div class="row">
+        <!-- filter -->
+        <div class="col s12 m6 l3">
+            <ul class="collection with-header">
+                <li class="collection-header"><h4>All Products</h4></li>
+                {% for category in categories %}
+                <a href="/?category={{category.id}}" class="collection-item">{{category.name}}</a>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- all products -->
+        <div id='products' class="col s12 m6 l9">
+            <div class="row">
+                {% for product in products %}
+                <div class="col s12 m6 l4">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="{{product.image.url}}">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title">{{product.name}}</span>
+                            <p><b>{{product.description}}</b></p>
+                            <p><b>{{product.price|currency}}</b></p>
+                        </div>
+                        <div class="card-action">
+                            {% if product|is_in_cart:request.session.cart %}
+                            <form action="/#{{product.id}}" method="post">
+                                {% csrf_token %}
+                                <input hidden type="text" name='product' value='{{product.id}}'>
+                                <input hidden type="text" name='remove' value='True'>
+                                <button type="submit" class="btn btn-small waves-effect waves-light red">-</button>
+                            </form>
+                            <span class="btn btn-small waves-effect waves-light">{{product|cart_quantity:request.session.cart}} in Cart</span>
+                            <form action="/#{{product.id}}" method="post">
+                                {% csrf_token %}
+                                <input hidden type="text" name='product' value='{{product.id}}'>
+                                <button type="submit" class="btn btn-small waves-effect waves-light green">+</button>
+                            </form>
+                            {% else %}
+                            <form action="/#{{product.id}}" method="POST">
+                                {% csrf_token %}
+                                <input hidden type="text" name='product' value='{{product.id}}'>
+                                <button type="submit" class="btn btn-small waves-effect waves-light">Add To Cart</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 %}
+                    </div><div class="row">
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

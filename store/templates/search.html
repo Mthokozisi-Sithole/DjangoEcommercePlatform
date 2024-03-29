@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %} Search {% endblock title %}
+{% block content %}
+
+{% load cart %}
+{% load custom_filter %}
+<!-- body -->
+<div class="container-fluid mt-3">
+	<div class="row">
+
+		<!-- filter -->
+		<div class="col s12 m6 l3">
+			<div class="collection">
+				<a href="/" class="collection-item btn btn-outline-success">All Products</a>
+				{% for category in categories %}
+				<a href="/?category={{category.id}}" class="collection-item btn btn-outline-success">{{category.name}}</a>
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- all products -->
+		<div id='products' class="col s12 m6 l9">
+			<div class="row">
+				{% for product in products %}
+				<div class="col s12 m6 l4">
+					<div class="card">
+						<div class="card-image">
+							<img src="{{product.image.url}}">
+							<span class="card-title">{{product.name}}</span>
+						</div>
+						<div class="card-content">
+							<p><b>{{product.price|currency}}</b></p>
+						</div>
+						<div class="card-action">
+							{% if product|is_in_cart:request.session.cart %}
+							<form action="/#{{product.id}}" class="col-2 " method="post">
+								{% csrf_token %}
+								<input hidden type="text" name='product' value='{{product.id}}'>
+								<input hidden type="text" name='remove' value='True'>
+								<button type="submit" class="btn btn-small btn-success"> - </button>
+							</form>
+							<span class="btn btn-small btn-success">{{product|cart_quantity:request.session.cart}} in Cart</span>
+							<form action="/#{{product.id}}" class="col-2 " method="post">
+								{% csrf_token %}
+								<input hidden type="text" name='product' value='{{product.id}}'>
+								<button type="submit" class="btn btn-small btn-success"> + </button>
+							</form>
+							{% else %}
+							<form action="/#{{product.id}}" method="POST">
+								{% csrf_token %}
+								<input hidden type="text" name='product' value='{{product.id}}'>
+								<button type="submit" class="btn btn-small btn-success">Add To Cart</button>
+							</form>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

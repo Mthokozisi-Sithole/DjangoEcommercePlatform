@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}E-commerce Website{% endblock %}</title>
+
+  <!-- Materialize CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="blue lighten-1">
+    <div class="nav-wrapper container">
+      <a href="/" class="brand-logo"><i class="material-icons">shopping_cart</i> E-Commerce</a>
+      <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="/store">Store</a></li>
+        <li><a href="/cart">Cart <span class="badge">{{ request.session.cart.keys|length }}</span></a></li>
+        {% if request.session.customer %}
+        <li><a href="/orders">Orders</a></li>
+        <li><a href="/logout">Logout</a></li>
+        {% else %}
+        <li><a href="/signup">Signup</a></li>
+        <li><a href="/login">Login</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Mobile Navbar -->
+  <ul class="sidenav" id="mobile-nav">
+    <li><a href="/store">Store</a></li>
+    <li><a href="/cart">Cart <span class="badge">{{ request.session.cart.keys|length }}</span></a></li>
+    {% if request.session.customer %}
+    <li><a href="/orders">Orders</a></li>
+    <li><a href="/logout">Logout</a></li>
+    {% else %}
+    <li><a href="/signup">Signup</a></li>
+    <li><a href="/login">Login</a></li>
+    {% endif %}
+  </ul>
+
+  <!-- Main Content -->
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <script>
+    // Initialize Materialize components
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.sidenav');
+      var instances = M.Sidenav.init(elems);
+    });
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
